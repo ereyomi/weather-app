@@ -15,7 +15,7 @@ Finally, it is sent to the browser and displayed in the user interface.
 2. `npm install body-parser` - middleware
 3. `npm install cors`
 4. `npm install express`
-5. `npm install nodemon`
+5. `npm install -g nodemon`
     run `nodemon [your app name]` instead of node [your app name] e.g 
     `nodemon server.js` to start project
 6. visit `localhost:8000` on your browser
