@@ -10,12 +10,19 @@ This data is then formatted and saved in an object on the server.
 
 Finally, it is sent to the browser and displayed in the user interface.
 
-### How to run
+### setup app yourself
 1. Clone the repo
-2. `npm install body-parser` - middleware
-3. `npm install cors`
-4. `npm install express`
-5. `npm install nodemon`
+2. Delete package.json
+3. `npm install body-parser` - middleware
+4. `npm install cors`
+5. `npm install express`
+6. `npm install nodemon`
     run `nodemon [your app name]` instead of node [your app name] e.g 
     `nodemon server.js` to start project
-6. visit `localhost:8000` on your browser
+7. visit `localhost:8000` on your browser
+
+### setup app using package.json
+1. Clone the repo
+2. `npm install` - middleware
+3. 	run `nodemon server.js` to start
+4. visit `localhost:8000` on your browser
