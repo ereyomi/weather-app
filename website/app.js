@@ -75,10 +75,10 @@ const btn = document.querySelector( "#generate" ),
 // Personal API Key for OpenWeatherMap API
 const apikey = '62f2b672194d4136da89832a175ba8ae';
 const endpoint = 'http://api.openweathermap.org/';
-
+const baseUrl = `${ endpoint }/data/2.5/weather?zip=`;
 //example = 'http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=c88b9d9f14854c57985e94d399cce307';
-// `http://api.openweathermap.org/data/2.5/weather?zip=${ zipcode},&appid=${ apikey }`;
- 
+// `${ endpoint }/data/2.5/weather?zip=${ zipcode},&appid=${ apikey }`;
+ // `${ endpoint }/2.5/weather?zip=${ zipcode },${ countrycode }&appid=${ apikey }`
 
 
 // Create a new date instance dynamically with JS
@@ -90,11 +90,9 @@ const generateDate = () => {
 //format date
 const formatDate = (date) => {
 
-    let currentDate = new Date( date);
-    /* save the above information using the below things I console log */
-    console.log( 'year: ', currentDate.getFullYear() );
-    console.log( 'Month: ', currentDate.getMonth(), " - ", months[ currentDate.getMonth() ] );
-    console.log( 'day: ', currentDate.getDate(), days[ currentDate.getDay() ] );
+    let theDate = new Date( date);
+    //months[ theDate.getMonth() ]
+    return `${ days[ theDate.getDay() ] } ${ theDate.getDay() }, ${ theDate.getFullYear()} `;
 }
 //convert Temp To Celcius
 const convertTempToCelcius = (temp) => {
@@ -106,8 +104,17 @@ const convertTempToCelcius = (temp) => {
 const getWeatherData = async ( api ) => {
     try
     {
+        const options = {
+            method: 'POST',
+            mode: 'CORS',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify( data )
+        };
         console.log(api)
-        await fetch( api )
+        await fetch( api, options )
             .then( data => data.json() )
             .then( data => console.log( data ) )
     } catch ( error )
@@ -173,7 +180,7 @@ const createCard = (data, parent) => {
         card.appendChild( createParagraph );
     } ) */
     card.innerHTML = `
-        <p id="date">${data.date}</p>
+        <p id="date">${formatDate(data.date)}</p>
         <p id="temp">${convertTempToCelcius( data.temperature )}&#8451;</p>
         <p id="location">${data.name}</p>
         <p id="content">${data.weather_description}</p>
@@ -205,26 +212,31 @@ const performProcess = event => {
 
     event.preventDefault();
     
-    const zip = zipInput.value;
+    const zipcode = zipInput.value;
     const feelings = feelingsInput.value;
     
     if ( zip !== '' && feelings !== '' )
     {
-        //const apiCall = `${ endpoint }/2.5/weather?zip=${ zipcode },${ countrycode }&appid=${ apikey }`;
-        //const weatherData = getWeatherData( apiCall );
-        const weatherData = w;
-        const toSenddata = {
-            date: generateDate(),
-            temperature: weatherData.main.temp,
-            feelings,
-            name: weatherData.name,
-            weather_description: weatherData.weather[0].description,
-        }
-        /* post data to project data */
-        postData( '/api/postdata', toSenddata );
+        const apiCall = `${ baseUrl }${ zipcode },&appid=${ apikey }`;
+        getData( apiCall )
+            .then( data => {
+                //const weatherData = w;
+                const toSenddata = {
+                    date: generateDate(),
+                    temperature: data.main.temp,
+                    feelings,
+                    name: data.name,
+                    weather_description: data.weather[ 0 ].description,
+                }
+                /* post data to project data */
+                postData( '/api/postdata', toSenddata );
 
-        /* update UI */
-        updateUserInterface();
+                /* update UI */
+                updateUserInterface();
+            }
+            
+        )
+        
         
         
     } else
