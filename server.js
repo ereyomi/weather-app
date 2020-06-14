@@ -31,12 +31,12 @@ const server = app.listen( port, () => {
 
 
 // Setup empty JS object to act as endpoint for all routes
-projectData = [
-    {
-    name: 'ereyomi'
-    },
-];
+projectData = [];
 
+//generate unique ID
+const generateUID = () => {
+    return Math.random().toString( 36 ).substring( 2, 15 ) + Math.random().toString( 36 ).substring( 2, 15 )
+}
 
 // Callback function to complete GET '/all'
 app.get( '/api/getdata', (req, res) => {
@@ -45,6 +45,10 @@ app.get( '/api/getdata', (req, res) => {
 
 // Post Route
 app.post( '/api/postdata', ( req, res ) => {
-    projectData.push( req.body );
+    const data = {
+        id: generateUID(),
+        ...req.body
+    }
+    projectData.push( data );
     res.send( projectData );
 } )
