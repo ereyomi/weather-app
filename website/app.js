@@ -106,8 +106,7 @@ const getWeatherData = async ( api ) => {
     {
         const options = {
             method: 'POST',
-            mode: 'CORS',
-            credentials: 'same-origin',
+            mode: 'CORS',   
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -137,17 +136,18 @@ const postData = async ( url = '', data = {} ) => {
         };
         
         try {
-            await fetch( url, options )
-                .then( res => res.json() )
-                .then( data => console.log( "posted: ", data ) );
+            const resp = await fetch( url, options )
+            const respData = resp.json();
+
+            return respData;
             
         } catch (error) {
-            console.log("error: ", error)
+            console.log( error );
         }
         
     } catch ( error )
     {
-        console.log( "error: ", error );
+        alert( "error: ", error );
 
     }
 }
@@ -161,7 +161,7 @@ const getData = async( url = '/api/getdata' ) => {
         return d;
 
     } catch (error) {
-        console.log("error: ", error)
+        alert( error );
     }
 }
 
@@ -219,21 +219,30 @@ const performProcess = event => {
     {
         const apiCall = `${ baseUrl }${ zipcode },&appid=${ apikey }`;
         getData( apiCall )
-            .then( data => {
-                //const weatherData = w;
-                const toSenddata = {
-                    date: generateDate(),
-                    temperature: data.main.temp,
-                    feelings,
-                    name: data.name,
-                    weather_description: data.weather[ 0 ].description,
-                }
-                /* post data to project data */
-                postData( '/api/postdata', toSenddata );
-
-                /* update UI */
-                updateUserInterface();
+        .then( data => {
+            const toSenddata = {
+                date: generateDate(),
+                temperature: data.main.temp,
+                feelings,
+                name: data.name,
+                weather_description: data.weather[ 0 ]?.description,
             }
+            /* post data to project data */
+            postData( '/api/postdata', toSenddata )
+            .then( data => {
+                    if ( data !== null || typeof data !== 'undefined' )
+                    {
+                        /* update UI */
+                        updateUserInterface();
+
+                    } else
+                    {
+                        alert( "An error occur while trying to post weather data" );
+                   } 
+            })
+
+            
+        }
             
         )
         
