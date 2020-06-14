@@ -1,16 +1,21 @@
-<<<<<<< HEAD
-# Weather-Journal App Project
+### Weather-Journal App Project
+This is the third project for the udacity frontend nanodegree program.
 
-## Overview
-This project requires you to create an asynchronous web app that uses Web API and user data to dynamically update the UI. 
+## Description
+This project's aim is to create an asynchronous web app that uses Web API and user data to dynamically update the UI for a Weather-Journal App. 
 
-## Instructions
-This will require modifying the `server.js` file and the `website/app.js` file. You can see `index.html` for element references, and once you are finished with the project steps, you can use `style.css` to style your application to customized perfection.
+The project makes use of the [OpenWeatherMap.com] API to retrieve current weather information on the zip code area that is passed in by the user. 
 
-## Extras
-If you are interested in testing your code as you go, you can use `tests.js` as a template for writing and running some basic tests for your code.
-||||||| merged common ancestors
-=======
-# weather-app
-This project contains backend(nodejs) and frontend(HTML and Vanillla js)
->>>>>>> 6eb6654af6c46735db2d7e15ae8900685c16c0d0
+This data is then formatted and saved in an object on the server.
+
+Finally, it is sent to the browser and displayed in the user interface.
+
+### How to run
+1. Clone the repo
+2. `npm install body-parser` - middleware
+3. `npm install cors`
+4. `npm install express`
+5. `npm install nodemon`
+    run `nodemon [your app name]` instead of node [your app name] e.g 
+    `nodemon server.js` to start project
+6. visit `localhost:8000` on your browser
