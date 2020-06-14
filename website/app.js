@@ -99,7 +99,7 @@ const formatDate = (date) => {
 //convert Temp To Celcius
 const convertTempToCelcius = (temp) => {
     const celcius = temp - 273; //passed in temperature is in kelvin
-    return celcius;
+    return celcius.toFixed(2);
 }
 
 /* Function to GET Web API Data*/
@@ -129,8 +129,14 @@ const postData = async ( url = '', data = {} ) => {
             body: JSON.stringify( data )
         };
         
-        const res = await fetch( url, options )
-        return await res.json();
+        try {
+            await fetch( url, options )
+                .then( res => res.json() )
+                .then( data => console.log( "posted: ", data ) );
+            
+        } catch (error) {
+            console.log("error: ", error)
+        }
         
     } catch ( error )
     {
@@ -140,10 +146,12 @@ const postData = async ( url = '', data = {} ) => {
 }
 
 /* Function to GET Project Data */
-const getData = async ( url = '' ) => {
-    try {
+const getData = async( url = '/api/getdata' ) => {
+    try
+    {
         const res = await fetch( url );
-        return await res.json();
+        const d = await res.json();
+        return d;
 
     } catch (error) {
         console.log("error: ", error)
@@ -151,36 +159,55 @@ const getData = async ( url = '' ) => {
 }
 
 /* create card UI */
-const createCard = () => {
+const createCard = (data, parent) => {
     //parent
-    const divParent = document.querySelector( '#entryHolder' );
+    
+    const divParent = parent;
     const card = document.createElement( 'div' );
     card.setAttribute( 'class', 'card' );
-    const childrenClasses = [ 'date', 'temp', 'location', 'content' ];
+   /*  const childrenClasses = [ 'date', 'temp', 'location', 'content' ];
 
     childrenClasses.forEach( childClass => {
         const createParagraph = document.createElement( 'p' );
         createParagraph.setAttribute( 'class', `${ childClass }` );
         card.appendChild( createParagraph );
-    } )
+    } ) */
+    card.innerHTML = `
+        <p id="date">${data.date}</p>
+        <p id="temp">${convertTempToCelcius( data.temperature )}&#8451;</p>
+        <p id="location">${data.name}</p>
+        <p id="content">${data.weather_description}</p>
+        <p id="content">${data.feelings}</p>
+    `; 
     divParent.appendChild( card );
 };
 /* update UI */
 const updateUserInterface = async () => {
 
-    
-    getData( '/api/getdata' )
-        .then( data => {
-            console.log([...data])
-            createCard(); 
+   
+    getData().then( data => {
+
+        if ( typeof data !== null && data.length > 0 )
+        {
+            const divParent = document.querySelector( '#entryHolder' );
+            divParent.innerHTML = '';
+            data.map( d => createCard( d, divParent ) );
+
+        } else
+        {
+            console.log("empty data")
+        }
         } )
 }
 
 /* Function called by event listener */
-const performProcess = () => {
+const performProcess = event => {
 
+    event.preventDefault();
+    
     const zip = zipInput.value;
     const feelings = feelingsInput.value;
+    
     if ( zip !== '' && feelings !== '' )
     {
         //const apiCall = `${ endpoint }/2.5/weather?zip=${ zipcode },${ countrycode }&appid=${ apikey }`;
