@@ -24,61 +24,18 @@ let months = [
     'November',
     'December'
 ];
-const w = {
-    "coord": { "lon": -122.08, "lat": 37.39 },
-    "weather": [
-        {
-            "id": 800,
-            "main": "Clear",
-            "description": "clear sky",
-            "icon": "01d"
-        }
-    ],
-    "base": "stations",
-    "main": {
-        "temp": 282.55,
-        "feels_like": 281.86,
-        "temp_min": 280.37,
-        "temp_max": 284.26,
-        "pressure": 1023,
-        "humidity": 100
-    },
-    "visibility": 16093,
-    "wind": {
-        "speed": 1.5,
-        "deg": 350
-    },
-    "clouds": {
-        "all": 1
-    },
-    "dt": 1560350645,
-    "sys": {
-        "type": 1,
-        "id": 5122,
-        "message": 0.0139,
-        "country": "US",
-        "sunrise": 1560343627,
-        "sunset": 1560396563
-    },
-    "timezone": -25200,
-    "id": 420006353,
-    "name": "Mountain View",
-    "cod": 200
-};
 
 //button and inputs
 const btn = document.querySelector( "#generate" ),
     zipInput = document.querySelector( "#zip" ), 
     feelingsInput = document.querySelector( "#feelings" );
 
-//
+
 // Personal API Key for OpenWeatherMap API
 const apikey = '62f2b672194d4136da89832a175ba8ae';
 const endpoint = 'http://api.openweathermap.org/';
 const baseUrl = `${ endpoint }/data/2.5/weather?zip=`;
-//example = 'http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=c88b9d9f14854c57985e94d399cce307';
-// `${ endpoint }/data/2.5/weather?zip=${ zipcode},&appid=${ apikey }`;
- // `${ endpoint }/2.5/weather?zip=${ zipcode },${ countrycode }&appid=${ apikey }`
+//http://api.openweathermap.org/data/2.5/weather?zip=94040,us&appid=62f2b672194d4136da89832a175ba8ae&units=imperial
 
 
 // Create a new date instance dynamically with JS
@@ -181,7 +138,7 @@ const createCard = (data, parent) => {
     } ) */
     card.innerHTML = `
         <p id="date">${formatDate(data.date)}</p>
-        <p id="temp">${convertTempToCelcius( data.temperature )}&#8451;</p>
+        <p id="temp">${data.temperature}&#8451;</p>
         <p id="location">${data.name}</p>
         <p id="content">${data.weather_description}</p>
         <p id="content">${data.feelings}</p>
@@ -217,7 +174,7 @@ const performProcess = event => {
     
     if ( zip !== '' && feelings !== '' )
     {
-        const apiCall = `${ baseUrl }${ zipcode },&appid=${ apikey }`;
+        const apiCall = `${ baseUrl }${ zipcode },&appid=${ apikey }&units=imperial`;
         getData( apiCall )
         .then( data => {
             const toSenddata = {
